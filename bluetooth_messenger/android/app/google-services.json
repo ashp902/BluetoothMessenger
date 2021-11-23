@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "452811721710",
+    "firebase_url": "https://bluetooth-messenge-r-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "bluetooth-messenge-r",
+    "storage_bucket": "bluetooth-messenge-r.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:452811721710:android:7253beb95ea72d6e5c5cff",
+        "android_client_info": {
+          "package_name": "com.example.bluetooth_messenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "452811721710-lr5tfb8j1kk7ord4429jmdv0o3do7je8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJgisMScDBnuXrwwf3Ng2mCTYaatwHcxU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "452811721710-lr5tfb8j1kk7ord4429jmdv0o3do7je8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
