@@ -47,15 +47,60 @@ class ProfileState extends State<Profile> {
               CircleAvatar(
                 radius: 70,
                 backgroundImage: AssetImage('assets/images/empty_profile.png'),
+                backgroundColor: Colors.transparent,
               ),
             ],
           ),
-          flex: 2,
+          flex: 3,
         ),
-        Spacer(),
         Expanded(
-          child: Column(),
-          flex: 2,
+          child: Padding(
+            padding: EdgeInsets.all(15),
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          color: secondaryColorAccent,
+                        ),
+                        child: ListTile(),
+                      ),
+                      Divider(
+                        color: secondaryColor,
+                        height: 2,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          color: secondaryColorAccent,
+                        ),
+                        child: ListTile(),
+                      ),
+                      Divider(
+                        color: secondaryColor,
+                        height: 2,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          color: secondaryColorAccent,
+                        ),
+                        child: ListTile(),
+                      ),
+                      Divider(
+                        color: secondaryColor,
+                        height: 2,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          flex: 5,
         ),
       ],
     );

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bluetooth_messenger/chats.dart';
+import 'package:bluetooth_messenger/db/chat_database.dart';
 import 'package:bluetooth_messenger/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:bluetooth_messenger/constants.dart';
@@ -60,15 +61,6 @@ class ChatScreen extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          if (user.isActive) ...[
-                            Text(
-                              'active',
-                              style: TextStyle(
-                                color: secondaryColor.withOpacity(0.75),
-                                fontSize: screenHeight / 60,
-                              ),
-                            )
-                          ]
                         ],
                       ),
                     ),
@@ -108,7 +100,7 @@ class ChatScreen extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: Messages(screenWidth, screenHeight, user.username),
+        child: Messages(screenWidth, screenHeight, user),
       ),
     );
   }
@@ -122,33 +114,59 @@ class ChatScreen extends StatelessWidget {
 class Messages extends StatefulWidget {
   final double screenWidth;
   final double screenHeight;
-  final String username;
+  final Person user;
 
-  Messages(this.screenWidth, this.screenHeight, this.username);
+  Messages(this.screenWidth, this.screenHeight, this.user);
 
-  MessagesState createState() =>
-      MessagesState(screenWidth, screenHeight, username);
+  MessagesState createState() => MessagesState(screenWidth, screenHeight, user);
 }
 
 class MessagesState extends State<Messages> {
   final double screenWidth;
   final double screenHeight;
-  final String username;
+  final Person user;
   final messenger = TextEditingController();
+  late List<ChatMessage> messages;
+  bool isLoading = false;
 
-  MessagesState(this.screenWidth, this.screenHeight, this.username);
+  @override
+  void initState() {
+    super.initState();
+    refreshMessages();
+  }
+
+  /**@override
+  void dispose() {
+    ChatDatabase.instance.close();
+    super.dispose();
+  }**/
+
+  Future refreshMessages() async {
+    setState(() => isLoading = true);
+    this.messages = await ChatDatabase.instance.readMessages(user.id);
+    setState(() => isLoading = false);
+  }
+
+  MessagesState(this.screenWidth, this.screenHeight, this.user);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(
-          child: ListView.builder(
-            padding: EdgeInsets.all(15),
-            itemCount: chats[username]!.messages.length,
-            itemBuilder: (BuildContext context, int index) =>
-                messageBuilder(context, index),
-          ),
+          child: isLoading
+              ? Center(
+                  child: CircularProgressIndicator(
+                    color: primaryColorAccent,
+                    strokeWidth: 3,
+                  ),
+                )
+              : ListView.builder(
+                  padding: EdgeInsets.all(15),
+                  itemCount: messages.length,
+                  itemBuilder: (BuildContext context, int index) =>
+                      messageBuilder(context, index),
+                ),
         ),
         inputField(),
       ],
@@ -213,7 +231,7 @@ class MessagesState extends State<Messages> {
   Widget messageBuilder(BuildContext context, int index) {
     return Padding(
       padding: EdgeInsets.all(5),
-      child: Message(chats[username]!.messages[index], screenWidth),
+      child: Message(messages[index], screenWidth),
     );
   }
 
@@ -221,12 +239,16 @@ class MessagesState extends State<Messages> {
     final String message = messenger.text;
     if (message == '') return;
     DateTime now = DateTime.now();
+    ChatDatabase.instance.postMessage(ChatMessage(
+      receipient: user.id,
+      content: message,
+      time: "${now.hour}:${now.minute}",
+      isSender: true,
+    ));
+    refreshMessages();
     setState(() {
-      chats[username]!
-          .messages
-          .add(ChatMessage(message, "${now.hour}:${now.minute}", true));
+      messenger.text = '';
     });
-    messenger.text = '';
   }
 }
 
