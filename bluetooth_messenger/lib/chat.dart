@@ -1,3 +1,6 @@
+//@JS()
+//library e;
+
 import 'dart:async';
 
 import 'package:bluetooth_messenger/chats.dart';
@@ -5,6 +8,10 @@ import 'package:bluetooth_messenger/db/chat_database.dart';
 import 'package:bluetooth_messenger/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:bluetooth_messenger/constants.dart';
+//import 'package:js/js.dart';
+
+//@JS()
+//external int test();
 
 class MyBehavior extends ScrollBehavior {
   @override
@@ -23,6 +30,7 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //print(test());
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
