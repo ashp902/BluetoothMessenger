@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: CustomTheme.dark,
       title: 'Bluetooth Messenger',
       debugShowCheckedModeBanner: false,
-      home: flag ? ChatsScreen() : WelcomeScreen(),
+      home: flag ? ChatsScreen() : welcomescreen(),
     );
   }
 
