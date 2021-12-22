@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:bluetooth_messenger/chats.dart';
 import 'package:bluetooth_messenger/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './signin.dart';
 
 class welcomescreen extends StatefulWidget {
@@ -9,17 +11,37 @@ class welcomescreen extends StatefulWidget {
 }
 
 class _welcomescreenState extends State<welcomescreen> {
+  bool flag = false;
+
   @override
   void initState() {
     //super.initState();
+    getLoginState();
     Timer(
-        Duration(seconds: 3),
-        () => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
+      Duration(seconds: 3),
+      () => flag
+          ? Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatsScreen(),
+              ),
+            )
+          : Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
                 builder: (context) => SignInScreen(
-                    MediaQuery.of(context).size.width,
-                    MediaQuery.of(context).size.height))));
+                  MediaQuery.of(context).size.width,
+                  MediaQuery.of(context).size.height,
+                ),
+              ),
+            ),
+    );
+  }
+
+  void getLoginState() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool loggedIn = prefs.getBool('LoggedIn') ?? false;
+    flag = loggedIn;
   }
 
   @override
@@ -114,36 +136,6 @@ class _welcomescreenState extends State<welcomescreen> {
               ),
               Spacer(
                 flex: 1,
-              ),
-              FittedBox(
-                child: TextButton(
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          SignInScreen(screenWidth, screenHeight),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Next",
-                        style: TextStyle(
-                          color: primaryColorAccent,
-                          fontSize: 20,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        size: 18,
-                        color: primaryColorAccent,
-                      )
-                    ],
-                  ),
-                ),
               ),
               Spacer(
                 flex: 1,

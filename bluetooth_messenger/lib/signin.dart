@@ -8,8 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import './chats.dart';
 
-String phoneNumber = '';
-
 class SignInScreen extends StatefulWidget {
   final double screenWidth;
   final double screenHeight;
@@ -59,7 +57,6 @@ class SignInScreenState extends State<SignInScreen> {
                 height: widget.screenHeight / 10,
               ),
               TextField(
-                autofocus: true,
                 controller: phoneNumberRetriever,
                 decoration: new InputDecoration(
                   enabledBorder: OutlineInputBorder(
@@ -170,7 +167,7 @@ class SignInScreenState extends State<SignInScreen> {
 
   void setErrorText() {
     if (phoneNumberRetriever.text == "" ||
-        phoneNumberRetriever.text.length < 10) {
+        phoneNumberRetriever.text.length != 10) {
       setState(() {
         errorText = "Please enter a valid Phone number";
         textFieldColor = errorColor;
