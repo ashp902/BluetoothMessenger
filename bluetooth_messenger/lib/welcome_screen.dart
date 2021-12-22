@@ -1,8 +1,23 @@
 import 'package:bluetooth_messenger/constants.dart';
 import 'package:flutter/material.dart';
 import './signin.dart';
+class welcomescreen extends StatefulWidget {
+  @override
+  _welcomescreenState createState() => _welcomescreenState();
+}
 
-class WelcomeScreen extends StatelessWidget {
+class _welcomescreenState extends State<welcomescreen> {
+  @override
+  void initState() {
+    //super.initState();
+    Timer(
+        Duration(seconds: 3),
+        () => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SignIn(MediaQuery.of(context).size.width,
+                    MediaQuery.of(context).size.height))));
+  }
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
