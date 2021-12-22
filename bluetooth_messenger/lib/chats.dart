@@ -10,13 +10,10 @@ import './chat.dart';
 const chatRoute = './chat';
 
 class ChatsScreen extends StatelessWidget {
-  final double screenWidth;
-  final double screenHeight;
-
-  ChatsScreen(this.screenWidth, this.screenHeight);
-
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -80,6 +77,7 @@ class ChatsState extends State<Chats> {
   final double screenWidth;
   final double screenHeight;
   late List<Person> chats;
+  List<String> lastMessages = [];
   bool isLoading = false;
 
   ChatsState(this.screenWidth, this.screenHeight);
@@ -90,17 +88,16 @@ class ChatsState extends State<Chats> {
     refreshChats();
   }
 
-  /**@override
-  void dispose() {
-    ChatDatabase.instance.close();
-    super.dispose();
-  }**/
-
   Future refreshChats() async {
     setState(() => isLoading = true);
 
     this.chats = await ChatDatabase.instance.readAllPersons();
-
+    lastMessages = [];
+    if (chats.isNotEmpty)
+      for (int i = 0; i < chats.length; i++) {
+        lastMessages
+            .add(await ChatDatabase.instance.getLastMessage(chats[i].id) ?? "");
+      }
     setState(() => isLoading = false);
   }
 
@@ -113,65 +110,83 @@ class ChatsState extends State<Chats> {
               strokeWidth: 3,
             ),
           )
-        : Scaffold(
-            body: ListView.builder(
-              itemCount: chats.length,
-              itemExtent: 80,
-              itemBuilder: (BuildContext context, int index) {
-                String username = chats[index].username;
-                String displayPicture = chats[index].displayPicture;
-                String? lastMessage = chats[index].lastMessage;
-                return Container(
-                  padding: EdgeInsets.only(top: 3),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      maxRadius: 30,
-                      backgroundImage: AssetImage(
-                        displayPicture,
+        : (chats.isEmpty)
+            ? Scaffold(
+                body: Center(
+                  child: Text(
+                    "No chats to display",
+                    style: TextStyle(
+                      color: secondaryColorAccent,
+                    ),
+                  ),
+                ),
+                floatingActionButton: FloatingActionButton(
+                  onPressed: addPerson,
+                  backgroundColor: primaryColor,
+                  child: Icon(
+                    Icons.add,
+                    color: secondaryColor,
+                  ),
+                ),
+              )
+            : Scaffold(
+                body: ListView.builder(
+                  itemCount: chats.length,
+                  itemExtent: 80,
+                  itemBuilder: (BuildContext context, int index) {
+                    String username = chats[index].username;
+                    String displayPicture = chats[index].displayPicture;
+                    return Container(
+                      padding: EdgeInsets.only(top: 3),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          maxRadius: 30,
+                          backgroundImage: AssetImage(
+                            displayPicture,
+                          ),
+                        ),
+                        title: Text(
+                          username,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        subtitle: Text(
+                          lastMessages[index],
+                          style: TextStyle(color: Colors.white60),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChatScreen(
+                                    chats[index], screenWidth, screenHeight)),
+                          ).then(update);
+                        },
                       ),
-                    ),
-                    title: Text(
-                      username,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    subtitle: Text(
-                      lastMessage!,
-                      style: TextStyle(color: Colors.white60),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ChatScreen(
-                                chats[index], screenWidth, screenHeight)),
-                      ).then(update);
-                    },
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: secondaryColorAccent),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                floatingActionButton: FloatingActionButton(
+                  onPressed: addPerson,
+                  backgroundColor: primaryColor,
+                  child: Icon(
+                    Icons.add,
+                    color: secondaryColor,
                   ),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: secondaryColorAccent),
-                    ),
-                  ),
-                );
-              },
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: addPerson,
-              backgroundColor: primaryColor,
-              child: Icon(
-                Icons.add,
-                color: secondaryColor,
-              ),
-            ),
-          );
+                ),
+              );
   }
 
   void addPerson() {
     ChatDatabase.instance.createPerson(Person(
-        number: 123,
-        username: 'Mitsuha',
-        displayPicture: 'assets/images/mitsuha.png',
-        lastMessage: ''));
+      number: 123,
+      username: 'Mitsuha',
+      displayPicture: 'assets/images/mitsuha.png',
+    ));
     refreshChats();
   }
 

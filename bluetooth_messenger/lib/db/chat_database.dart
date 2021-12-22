@@ -37,8 +37,8 @@ class ChatDatabase {
       ${PersonFields.id} $idType,
       ${PersonFields.number} $numberType,
       ${PersonFields.username} $textType,
-      ${PersonFields.displayPicture} $textType,
-      ${PersonFields.lastMessage} $textType
+      ${PersonFields.displayPicture} $textType
+
     )
     ''');
 
@@ -54,6 +54,8 @@ class ChatDatabase {
     ''');
   }
 
+  //persons
+
   Future<Person> createPerson(Person person) async {
     final db = await instance.database;
 
@@ -62,20 +64,16 @@ class ChatDatabase {
     return person.copy(id: id);
   }
 
-  Future<ChatMessage> postMessage(ChatMessage message) async {
+  Future<int> removePerson(int id) async {
     final db = await instance.database;
 
-    final id = await db.insert(messages, message.toJson());
-    db.update(
-      persons,
-      {
-        PersonFields.lastMessage: message.content,
-      },
-      where: '${PersonFields.id} = ?',
-      whereArgs: [message.receipient],
-    );
+    deleteAllMessages(id);
 
-    return message.copy(id: id);
+    return await db.delete(
+      persons,
+      where: '${PersonFields.id} = ?',
+      whereArgs: [id],
+    );
   }
 
   Future<Person?> readPerson(int number) async {
@@ -95,6 +93,45 @@ class ChatDatabase {
     }
   }
 
+  Future<List<Person>> readAllPersons() async {
+    final db = await instance.database;
+
+    final result = await db.query(persons);
+
+    return result.map((json) => Person.fromJson(json)).toList();
+  }
+
+  //messages
+
+  Future<ChatMessage> postMessage(ChatMessage message) async {
+    final db = await instance.database;
+
+    final id = await db.insert(messages, message.toJson());
+
+    return message.copy(id: id);
+  }
+
+  Future<int?> deleteMessage(int? id) async {
+    final db = await instance.database;
+
+    return await db.delete(
+      messages,
+      where: '${MessageFields.id} = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<ChatMessage> readMessage(int? id) async {
+    final db = await instance.database;
+
+    final result = await db.query(
+      messages,
+      where: '${MessageFields.id} = ?',
+      whereArgs: [id],
+    );
+    return ChatMessage.fromJson(result.first);
+  }
+
   Future<List<ChatMessage>> readMessages(int? receipient) async {
     final db = await instance.database;
 
@@ -107,44 +144,20 @@ class ChatDatabase {
     return result.map((json) => ChatMessage.fromJson(json)).toList();
   }
 
-  Future<List<Person>> readAllPersons() async {
+  Future<String?> getLastMessage(int? receipient) async {
     final db = await instance.database;
 
-    final result = await db.query(persons);
-
-    return result.map((json) => Person.fromJson(json)).toList();
-  }
-
-  /**Future<Map<String, Object?>> getLastMessage(int? receipient) async {
-    final db = await instance.database;
-
-    final lastMessage = await db.rawQuery(
-        'SELECT ${MessageFields.content} FROM $messages WHERE ${MessageFields.receipient} = $receipient ORDER BY ${MessageFields.id} DESC LIMIT 1');
-
-    print(lastMessage.first[MessageFields.content]);
-    return lastMessage.first;
-  }**/
-
-  Future<int> removePerson(int id) async {
-    final db = await instance.database;
-
-    deleteAllMessages(id);
-
-    return await db.delete(
-      persons,
-      where: '${PersonFields.id} = ?',
-      whereArgs: [id],
-    );
-  }
-
-  Future<int> deleteMessage(int id) async {
-    final db = await instance.database;
-
-    return await db.delete(
+    final lastMessage = await db.query(
       messages,
-      where: '${MessageFields.id} = ?',
-      whereArgs: [id],
+      orderBy: MessageFields.id,
+      where: '${MessageFields.receipient} = ?',
+      whereArgs: [receipient],
     );
+
+    if (lastMessage.isNotEmpty)
+      return lastMessage.last[MessageFields.content] as String;
+    else
+      return null;
   }
 
   void deleteAllMessages(int receipient) async {

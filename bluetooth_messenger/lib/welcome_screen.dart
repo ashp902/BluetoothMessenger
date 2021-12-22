@@ -101,7 +101,8 @@ class WelcomeScreen extends StatelessWidget {
                   onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SignIn(screenWidth, screenHeight),
+                      builder: (context) =>
+                          SignInScreen(screenWidth, screenHeight),
                     ),
                   ),
                   child: Row(

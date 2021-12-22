@@ -56,14 +56,12 @@ class PersonFields {
     number,
     username,
     displayPicture,
-    lastMessage,
   ];
 
   static final String id = 'id';
   static final String number = 'number';
   static final String username = 'username';
   static final String displayPicture = 'displayPicture';
-  static final String lastMessage = 'lastMessage';
 }
 
 class MessageFields {
@@ -87,14 +85,12 @@ class Person {
   final int number;
   final String username;
   final String displayPicture;
-  final String? lastMessage;
 
   const Person({
     this.id,
     required this.number,
     required this.username,
     required this.displayPicture,
-    this.lastMessage,
   });
 
   Map<String, Object?> toJson() => {
@@ -102,7 +98,6 @@ class Person {
         PersonFields.number: number,
         PersonFields.username: username,
         PersonFields.displayPicture: displayPicture,
-        PersonFields.lastMessage: lastMessage,
       };
 
   static Person fromJson(Map<String, Object?> json) => Person(
@@ -110,7 +105,6 @@ class Person {
         number: json[PersonFields.number] as int,
         username: json[PersonFields.username] as String,
         displayPicture: json[PersonFields.displayPicture] as String,
-        lastMessage: json[PersonFields.lastMessage] as String,
       );
 
   Person copy({
@@ -125,7 +119,6 @@ class Person {
         number: number ?? this.number,
         username: username ?? this.username,
         displayPicture: displayPicture ?? this.displayPicture,
-        lastMessage: lastMessage ?? this.lastMessage,
       );
 }
 

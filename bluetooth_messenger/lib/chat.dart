@@ -1,6 +1,3 @@
-//@JS()
-//library e;
-
 import 'dart:async';
 
 import 'package:bluetooth_messenger/chats.dart';
@@ -8,18 +5,6 @@ import 'package:bluetooth_messenger/db/chat_database.dart';
 import 'package:bluetooth_messenger/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:bluetooth_messenger/constants.dart';
-//import 'package:js/js.dart';
-
-//@JS()
-//external int test();
-
-class MyBehavior extends ScrollBehavior {
-  @override
-  Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
-    return child;
-  }
-}
 
 class ChatScreen extends StatelessWidget {
   final Person user;
@@ -152,6 +137,7 @@ class MessagesState extends State<Messages> {
   Future refreshMessages() async {
     setState(() => isLoading = true);
     this.messages = await ChatDatabase.instance.readMessages(user.id);
+
     setState(() => isLoading = false);
   }
 
@@ -237,9 +223,39 @@ class MessagesState extends State<Messages> {
   }
 
   Widget messageBuilder(BuildContext context, int index) {
+    final message = messages[index];
     return Padding(
       padding: EdgeInsets.all(5),
-      child: Message(messages[index], screenWidth),
+      child: InkWell(
+        onLongPress: () {
+          ChatDatabase.instance.deleteMessage(message.id);
+          refreshMessages();
+        },
+        child: Row(
+          mainAxisAlignment: message.isSender
+              ? MainAxisAlignment.end
+              : MainAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(15),
+              constraints: BoxConstraints(maxWidth: screenWidth * 0.75),
+              decoration: BoxDecoration(
+                color: message.isSender
+                    ? secondaryColorAccent
+                    : primaryColorAccent,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Text(
+                message.content,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -260,7 +276,7 @@ class MessagesState extends State<Messages> {
   }
 }
 
-class Message extends StatelessWidget {
+/**class Message extends StatelessWidget {
   final message;
   final double screenWidth;
 
@@ -268,26 +284,33 @@ class Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment:
-          message.isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.all(15),
-          constraints: BoxConstraints(maxWidth: screenWidth * 0.75),
-          decoration: BoxDecoration(
-            color: message.isSender ? secondaryColorAccent : primaryColorAccent,
-            borderRadius: BorderRadius.circular(30),
-          ),
-          child: Text(
-            message.content,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
+    return InkWell(
+      onTap: () {
+        ChatDatabase.instance.deleteMessage(message.id);
+      },
+      child: Row(
+        mainAxisAlignment:
+            message.isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          Container(
+            padding: EdgeInsets.all(15),
+            constraints: BoxConstraints(maxWidth: screenWidth * 0.75),
+            decoration: BoxDecoration(
+              color:
+                  message.isSender ? secondaryColorAccent : primaryColorAccent,
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: Text(
+              message.content,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
+**/

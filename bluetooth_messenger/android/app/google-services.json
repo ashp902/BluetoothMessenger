@@ -1,34 +1,41 @@
 {
   "project_info": {
-    "project_number": "452811721710",
-    "firebase_url": "https://bluetooth-messenge-r-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "project_id": "bluetooth-messenge-r",
-    "storage_bucket": "bluetooth-messenge-r.appspot.com"
+    "project_number": "951811811676",
+    "project_id": "bluetooth-messenger-719d2",
+    "storage_bucket": "bluetooth-messenger-719d2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:452811721710:android:7253beb95ea72d6e5c5cff",
+        "mobilesdk_app_id": "1:951811811676:android:5753b4b54a12bb9d1d3999",
         "android_client_info": {
           "package_name": "com.example.bluetooth_messenger"
         }
       },
       "oauth_client": [
         {
-          "client_id": "452811721710-lr5tfb8j1kk7ord4429jmdv0o3do7je8.apps.googleusercontent.com",
+          "client_id": "951811811676-kk5bqgnl9nd2a7m3je8pet7dfbe5s9s0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bluetooth_messenger",
+            "certificate_hash": "3934b7ff238088ddae471e130d21d16a36d62b4e"
+          }
+        },
+        {
+          "client_id": "951811811676-78npv9ku0760janb9rlv10dk3cdspfat.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDJgisMScDBnuXrwwf3Ng2mCTYaatwHcxU"
+          "current_key": "AIzaSyC9PKMCXkeB9P5gWsQ_WLFqLrzgF3aL-Lg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "452811721710-lr5tfb8j1kk7ord4429jmdv0o3do7je8.apps.googleusercontent.com",
+              "client_id": "951811811676-78npv9ku0760janb9rlv10dk3cdspfat.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
