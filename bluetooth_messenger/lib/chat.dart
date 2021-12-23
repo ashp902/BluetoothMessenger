@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:bluetooth_messenger/chats.dart';
 import 'package:bluetooth_messenger/db/chat_database.dart';
 import 'package:bluetooth_messenger/profile.dart';
 import 'package:flutter/material.dart';
@@ -11,17 +10,17 @@ class ChatScreen extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;
 
-  ChatScreen(this.user, this.screenWidth, this.screenHeight);
+  const ChatScreen(this.user, this.screenWidth, this.screenHeight, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    //print(test());
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: primaryColorAccent,
         leading: IconButton(
-          icon: new Icon(
+          icon: const Icon(
             Icons.arrow_back_ios_rounded,
             color: secondaryColor,
           ),
@@ -65,16 +64,16 @@ class ChatScreen extends StatelessWidget {
         ),
         actions: [
           PopupMenuButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.more_vert_rounded,
               color: secondaryColor,
             ),
-            shape: OutlineInputBorder(
+            shape: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(6)),
             ),
             color: secondaryColorAccent,
             itemBuilder: (context) => [
-              PopupMenuItem(
+              const PopupMenuItem(
                 value: 0,
                 child: Text(
                   "Settings",
@@ -85,15 +84,16 @@ class ChatScreen extends StatelessWidget {
               ),
             ],
             onSelected: (result) {
-              if (result == 0)
+              if (result == 0) {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => ProfileScreen()));
+              }
             },
           ),
         ],
       ),
       body: SafeArea(
-        child: Messages(screenWidth, screenHeight, user),
+        child: _Messages(screenWidth, screenHeight, user),
       ),
     );
   }
@@ -104,20 +104,19 @@ class ChatScreen extends StatelessWidget {
   }
 }
 
-class Messages extends StatefulWidget {
+class _Messages extends StatefulWidget {
   final double screenWidth;
   final double screenHeight;
   final Person user;
 
-  Messages(this.screenWidth, this.screenHeight, this.user);
+  const _Messages(this.screenWidth, this.screenHeight, this.user, {Key? key})
+      : super(key: key);
 
-  MessagesState createState() => MessagesState(screenWidth, screenHeight, user);
+  @override
+  _MessagesState createState() => _MessagesState();
 }
 
-class MessagesState extends State<Messages> {
-  final double screenWidth;
-  final double screenHeight;
-  final Person user;
+class _MessagesState extends State<_Messages> {
   final messenger = TextEditingController();
   late List<ChatMessage> messages;
   bool isLoading = false;
@@ -128,20 +127,12 @@ class MessagesState extends State<Messages> {
     refreshMessages();
   }
 
-  /**@override
-  void dispose() {
-    ChatDatabase.instance.close();
-    super.dispose();
-  }**/
-
   Future refreshMessages() async {
     setState(() => isLoading = true);
-    this.messages = await ChatDatabase.instance.readMessages(user.id);
+    messages = await ChatDatabase.instance.readMessages(widget.user.id);
 
     setState(() => isLoading = false);
   }
-
-  MessagesState(this.screenWidth, this.screenHeight, this.user);
 
   @override
   Widget build(BuildContext context) {
@@ -149,14 +140,14 @@ class MessagesState extends State<Messages> {
       children: [
         Expanded(
           child: isLoading
-              ? Center(
+              ? const Center(
                   child: CircularProgressIndicator(
                     color: primaryColorAccent,
                     strokeWidth: 3,
                   ),
                 )
               : ListView.builder(
-                  padding: EdgeInsets.all(15),
+                  padding: const EdgeInsets.all(15),
                   itemCount: messages.length,
                   itemBuilder: (BuildContext context, int index) =>
                       messageBuilder(context, index),
@@ -177,25 +168,25 @@ class MessagesState extends State<Messages> {
             Expanded(
               flex: 7,
               child: Padding(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: TextField(
                   controller: messenger,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                   ),
-                  decoration: new InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Enter a Message',
-                    hintStyle: TextStyle(
+                    hintStyle: const TextStyle(
                       color: Colors.white54,
                     ),
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         color: secondaryColor,
                       ),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         color: primaryColor,
                       ),
                       borderRadius: BorderRadius.circular(20),
@@ -209,7 +200,7 @@ class MessagesState extends State<Messages> {
               child: IconButton(
                 onPressed: post,
                 padding: EdgeInsets.zero,
-                icon: Icon(
+                icon: const Icon(
                   Icons.send_rounded,
                   size: 35,
                   color: primaryColorAccent,
@@ -225,7 +216,7 @@ class MessagesState extends State<Messages> {
   Widget messageBuilder(BuildContext context, int index) {
     final message = messages[index];
     return Padding(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       child: InkWell(
         onLongPress: () {
           ChatDatabase.instance.deleteMessage(message.id);
@@ -237,8 +228,8 @@ class MessagesState extends State<Messages> {
               : MainAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.all(15),
-              constraints: BoxConstraints(maxWidth: screenWidth * 0.75),
+              padding: const EdgeInsets.all(15),
+              constraints: BoxConstraints(maxWidth: widget.screenWidth * 0.75),
               decoration: BoxDecoration(
                 color: message.isSender
                     ? secondaryColorAccent
@@ -247,7 +238,7 @@ class MessagesState extends State<Messages> {
               ),
               child: Text(
                 message.content,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                 ),
@@ -264,7 +255,7 @@ class MessagesState extends State<Messages> {
     if (message == '') return;
     DateTime now = DateTime.now();
     ChatDatabase.instance.postMessage(ChatMessage(
-      receipient: user.id,
+      receipient: widget.user.id,
       content: message,
       time: "${now.hour}:${now.minute}",
       isSender: true,
@@ -275,42 +266,3 @@ class MessagesState extends State<Messages> {
     });
   }
 }
-
-/**class Message extends StatelessWidget {
-  final message;
-  final double screenWidth;
-
-  Message(this.message, this.screenWidth);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        ChatDatabase.instance.deleteMessage(message.id);
-      },
-      child: Row(
-        mainAxisAlignment:
-            message.isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.all(15),
-            constraints: BoxConstraints(maxWidth: screenWidth * 0.75),
-            decoration: BoxDecoration(
-              color:
-                  message.isSender ? secondaryColorAccent : primaryColorAccent,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Text(
-              message.content,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-**/

@@ -19,18 +19,17 @@ class ChatDatabase {
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
-    print(path);
 
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
   Future _createDB(Database db, int version) async {
-    final idType = "INTEGER PRIMARY KEY AUTOINCREMENT";
-    final numberType = 'INTEGER NOT NULL';
-    final textType = 'TEXT NOT NULL';
-    final boolType = 'BOOLEAN NOT NULL';
+    const idType = "INTEGER PRIMARY KEY AUTOINCREMENT";
+    const numberType = 'INTEGER NOT NULL';
+    const textType = 'TEXT NOT NULL';
+    const boolType = 'BOOLEAN NOT NULL';
 
-    final reciepientType = 'INETGER NOT NULL';
+    const reciepientType = 'INETGER NOT NULL';
 
     await db.execute('''
     CREATE TABLE $persons (
@@ -154,10 +153,11 @@ class ChatDatabase {
       whereArgs: [receipient],
     );
 
-    if (lastMessage.isNotEmpty)
+    if (lastMessage.isNotEmpty) {
       return lastMessage.last[MessageFields.content] as String;
-    else
+    } else {
       return null;
+    }
   }
 
   void deleteAllMessages(int receipient) async {

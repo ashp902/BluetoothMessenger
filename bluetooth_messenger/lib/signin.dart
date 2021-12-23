@@ -2,18 +2,13 @@ import 'package:bluetooth_messenger/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:google_fonts/google_fonts.dart';
-//import 'package:firebase_database/firebase_database.dart';
-//import 'package:firebase_core/firebase_core.dart';
 
 import './chats.dart';
 
 class SignInScreen extends StatefulWidget {
-  final double screenWidth;
-  final double screenHeight;
+  const SignInScreen({Key? key}) : super(key: key);
 
-  SignInScreen(this.screenWidth, this.screenHeight);
-
+  @override
   SignInScreenState createState() => SignInScreenState();
 }
 
@@ -25,7 +20,7 @@ class SignInScreenState extends State<SignInScreen> {
   String? verificationIDReceiver;
   bool OTPsent = false;
   String buttonText = "Submit";
-  String? phone_number;
+  String? phoneNumber;
 
   @override
   void initState() {
@@ -34,17 +29,19 @@ class SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
           child: ListView(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             children: [
               Divider(
-                height: widget.screenHeight / 10,
+                height: screenHeight / 10,
               ),
-              Text(
+              const Text(
                 'Get started',
                 style: TextStyle(
                   fontSize: 50,
@@ -54,11 +51,11 @@ class SignInScreenState extends State<SignInScreen> {
                 textAlign: TextAlign.center,
               ),
               Divider(
-                height: widget.screenHeight / 10,
+                height: screenHeight / 10,
               ),
               TextField(
                 controller: phoneNumberRetriever,
-                decoration: new InputDecoration(
+                decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: textFieldColor, width: 1.0),
                   ),
@@ -66,33 +63,33 @@ class SignInScreenState extends State<SignInScreen> {
                       borderSide:
                           BorderSide(color: textFieldColor, width: 1.0)),
                   hintText: 'Phone number',
-                  hintStyle: TextStyle(
+                  hintStyle: const TextStyle(
                     color: primaryColorAccent,
                     fontSize: 12,
                   ),
                 ),
-                style: TextStyle(
+                style: const TextStyle(
                   color: primaryColor,
                 ),
                 keyboardType: TextInputType.number,
               ),
               Text(
-                "$errorText",
-                style: TextStyle(
+                errorText,
+                style: const TextStyle(
                   color: errorColor,
                   fontSize: 14,
                 ),
               ),
               //try {
               Divider(
-                height: widget.screenHeight / 50,
+                height: screenHeight / 50,
               ),
               Visibility(
                 visible: OTPsent,
                 child: TextField(
                   maxLength: 6,
                   controller: OTPRetriever,
-                  decoration: new InputDecoration(
+                  decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: textFieldColor, width: 1.0),
                     ),
@@ -100,12 +97,12 @@ class SignInScreenState extends State<SignInScreen> {
                         borderSide:
                             BorderSide(color: textFieldColor, width: 1.0)),
                     hintText: 'Enter OTP',
-                    hintStyle: TextStyle(
+                    hintStyle: const TextStyle(
                       color: primaryColorAccent,
                       fontSize: 12,
                     ),
                   ),
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: primaryColor,
                   ),
                   keyboardType: TextInputType.number,
@@ -113,19 +110,19 @@ class SignInScreenState extends State<SignInScreen> {
               ),
 
               Divider(
-                height: widget.screenHeight * 3 / 10,
+                height: screenHeight * 3 / 10,
               ),
               Container(
-                padding: EdgeInsets.all(5),
-                width: widget.screenWidth / 4,
-                height: widget.screenHeight / 15,
+                padding: const EdgeInsets.all(5),
+                width: screenWidth / 4,
+                height: screenHeight / 15,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: secondaryColor,
                   ),
-                  borderRadius: BorderRadius.all(
-                      Radius.circular(widget.screenHeight / 30)),
+                  borderRadius:
+                      BorderRadius.all(Radius.circular(screenHeight / 30)),
                   color: primaryColor,
                 ),
                 child: TextButton(
@@ -143,7 +140,7 @@ class SignInScreenState extends State<SignInScreen> {
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ChatsScreen()),
+                                  builder: (context) => const ChatsScreen()),
                               (route) => false);
                         }
                       });
@@ -151,7 +148,7 @@ class SignInScreenState extends State<SignInScreen> {
                   },
                   child: Text(
                     buttonText,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       color: secondaryColor,
                     ),
@@ -174,7 +171,7 @@ class SignInScreenState extends State<SignInScreen> {
       });
     } else {
       setState(() {
-        phone_number = "+91" + phoneNumberRetriever.text;
+        phoneNumber = "+91" + phoneNumberRetriever.text;
         errorText = "";
         textFieldColor = primaryColor;
         OTPsent = true;
@@ -186,7 +183,7 @@ class SignInScreenState extends State<SignInScreen> {
 
   verifyPhone() async {
     await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: phone_number!,
+      phoneNumber: phoneNumber!,
       codeSent: (String verificationID, int? resendToken) {
         setState(() {
           verificationIDReceiver = verificationID;
@@ -205,7 +202,7 @@ class SignInScreenState extends State<SignInScreen> {
             setLoginState();
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => ChatsScreen()),
+                MaterialPageRoute(builder: (context) => const ChatsScreen()),
                 (route) => false);
           }
         });

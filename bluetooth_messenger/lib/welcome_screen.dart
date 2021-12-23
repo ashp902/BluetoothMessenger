@@ -5,20 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './signin.dart';
 
-class welcomescreen extends StatefulWidget {
+class WelcomeScreen extends StatefulWidget {
+  const WelcomeScreen({Key? key}) : super(key: key);
+
   @override
-  _welcomescreenState createState() => _welcomescreenState();
+  _WelcomeScreenState createState() => _WelcomeScreenState();
 }
 
-class _welcomescreenState extends State<welcomescreen> {
+class _WelcomeScreenState extends State<WelcomeScreen> {
   bool flag = false;
 
   @override
   void initState() {
-    //super.initState();
     getLoginState();
     Timer(
-      Duration(seconds: 3),
+      const Duration(seconds: 3),
       () => flag
           ? Navigator.pushReplacement(
               context,
@@ -29,10 +30,7 @@ class _welcomescreenState extends State<welcomescreen> {
           : Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => SignInScreen(
-                  MediaQuery.of(context).size.width,
-                  MediaQuery.of(context).size.height,
-                ),
+                builder: (context) => SignInScreen(),
               ),
             ),
     );
@@ -46,14 +44,12 @@ class _welcomescreenState extends State<welcomescreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
         child: Center(
           child: Column(
             children: [
-              Spacer(
+              const Spacer(
                 flex: 1,
               ),
               Expanded(
@@ -61,8 +57,8 @@ class _welcomescreenState extends State<welcomescreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Spacer(),
-                      Text(
+                      const Spacer(),
+                      const Text(
                         "Welcome",
                         style: TextStyle(
                           color: primaryColor,
@@ -70,10 +66,10 @@ class _welcomescreenState extends State<welcomescreen> {
                           fontWeight: FontWeight.w300,
                         ),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
+                        children: const [
                           Icon(
                             Icons.bluetooth_connected_rounded,
                             color: primaryColor,
@@ -123,10 +119,10 @@ class _welcomescreenState extends State<welcomescreen> {
                       )
                     ],
                   )),
-              Spacer(
+              const Spacer(
                 flex: 1,
               ),
-              Text(
+              const Text(
                 'Chat with anyone in your Bluetooth network',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -134,10 +130,10 @@ class _welcomescreenState extends State<welcomescreen> {
                   color: primaryColorAccent,
                 ),
               ),
-              Spacer(
+              const Spacer(
                 flex: 1,
               ),
-              Spacer(
+              const Spacer(
                 flex: 1,
               ),
             ],

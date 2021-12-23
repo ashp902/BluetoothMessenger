@@ -10,6 +10,8 @@ import './chat.dart';
 const chatRoute = './chat';
 
 class ChatsScreen extends StatelessWidget {
+  const ChatsScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -21,20 +23,20 @@ class ChatsScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.search_rounded),
+            icon: const Icon(Icons.search_rounded),
             color: secondaryColor,
           ),
           PopupMenuButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.more_vert_rounded,
               color: secondaryColor,
             ),
-            shape: OutlineInputBorder(
+            shape: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(6)),
             ),
             color: secondaryColor,
             itemBuilder: (context) => [
-              PopupMenuItem(
+              const PopupMenuItem(
                 child: Text(
                   "Settings",
                   style: TextStyle(
@@ -45,13 +47,14 @@ class ChatsScreen extends StatelessWidget {
               ),
             ],
             onSelected: (result) {
-              if (result == 0)
+              if (result == 0) {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => ProfileScreen()));
+              }
             },
           ),
         ],
-        title: Text(
+        title: const Text(
           "Chats",
           style: TextStyle(
             color: secondaryColor,
@@ -67,20 +70,21 @@ class Chats extends StatefulWidget {
   final double screenWidth;
   final double screenHeight;
 
-  Chats(this.screenWidth, this.screenHeight);
+  const Chats(this.screenWidth, this.screenHeight, {Key? key})
+      : super(key: key);
 
   @override
-  ChatsState createState() => ChatsState(screenWidth, screenHeight);
+  _ChatsState createState() => _ChatsState(screenWidth, screenHeight);
 }
 
-class ChatsState extends State<Chats> {
+class _ChatsState extends State<Chats> {
   final double screenWidth;
   final double screenHeight;
   late List<Person> chats;
   List<String> lastMessages = [];
   bool isLoading = false;
 
-  ChatsState(this.screenWidth, this.screenHeight);
+  _ChatsState(this.screenWidth, this.screenHeight);
 
   @override
   void initState() {
@@ -91,20 +95,21 @@ class ChatsState extends State<Chats> {
   Future refreshChats() async {
     setState(() => isLoading = true);
 
-    this.chats = await ChatDatabase.instance.readAllPersons();
+    chats = await ChatDatabase.instance.readAllPersons();
     lastMessages = [];
-    if (chats.isNotEmpty)
+    if (chats.isNotEmpty) {
       for (int i = 0; i < chats.length; i++) {
         lastMessages
             .add(await ChatDatabase.instance.getLastMessage(chats[i].id) ?? "");
       }
+    }
     setState(() => isLoading = false);
   }
 
   @override
   Widget build(BuildContext context) {
     return isLoading
-        ? Center(
+        ? const Center(
             child: CircularProgressIndicator(
               color: primaryColorAccent,
               strokeWidth: 3,
@@ -112,7 +117,7 @@ class ChatsState extends State<Chats> {
           )
         : (chats.isEmpty)
             ? Scaffold(
-                body: Center(
+                body: const Center(
                   child: Text(
                     "No chats to display",
                     style: TextStyle(
@@ -123,7 +128,7 @@ class ChatsState extends State<Chats> {
                 floatingActionButton: FloatingActionButton(
                   onPressed: addPerson,
                   backgroundColor: primaryColor,
-                  child: Icon(
+                  child: const Icon(
                     Icons.add,
                     color: secondaryColor,
                   ),
@@ -137,7 +142,7 @@ class ChatsState extends State<Chats> {
                     String username = chats[index].username;
                     String displayPicture = chats[index].displayPicture;
                     return Container(
-                      padding: EdgeInsets.only(top: 3),
+                      padding: const EdgeInsets.only(top: 3),
                       child: ListTile(
                         leading: CircleAvatar(
                           maxRadius: 30,
@@ -147,11 +152,11 @@ class ChatsState extends State<Chats> {
                         ),
                         title: Text(
                           username,
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                         ),
                         subtitle: Text(
                           lastMessages[index],
-                          style: TextStyle(color: Colors.white60),
+                          style: const TextStyle(color: Colors.white60),
                         ),
                         onTap: () {
                           Navigator.push(
@@ -162,7 +167,7 @@ class ChatsState extends State<Chats> {
                           ).then(update);
                         },
                       ),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         border: Border(
                           bottom: BorderSide(color: secondaryColorAccent),
                         ),
@@ -173,7 +178,7 @@ class ChatsState extends State<Chats> {
                 floatingActionButton: FloatingActionButton(
                   onPressed: addPerson,
                   backgroundColor: primaryColor,
-                  child: Icon(
+                  child: const Icon(
                     Icons.add,
                     color: secondaryColor,
                   ),
@@ -182,7 +187,7 @@ class ChatsState extends State<Chats> {
   }
 
   void addPerson() {
-    ChatDatabase.instance.createPerson(Person(
+    ChatDatabase.instance.createPerson(const Person(
       number: 123,
       username: 'Mitsuha',
       displayPicture: 'assets/images/mitsuha.png',

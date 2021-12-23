@@ -1,6 +1,4 @@
-import 'package:bluetooth_messenger/chat.dart';
 import 'package:flutter/material.dart';
-//import 'package:google_fonts/google_fonts.dart';
 
 const primaryColor = Color(0xffAB20FD);
 const primaryColorAccent = Color(0xff7D12FF);
@@ -8,26 +6,13 @@ const secondaryColor = Color(0xff212121);
 const secondaryColorAccent = Color(0xff323232);
 const errorColor = Color(0xffff9494);
 
-/**Map<String, Person> chats = {
-  'Mitsuha': Person(
-    number: 1,
-    username: 'Mitsuha',
-    displayPicture: 'assets/images/mitsuha.png',
-  ),
-  'Taki': Person(
-    number: 2,
-    username: 'Taki',
-    displayPicture: 'assets/images/taki.png',
-  ),
-};**/
-
 class CustomTheme {
   static ThemeData get dark {
     return ThemeData(
       primaryColor: primaryColor,
       scaffoldBackgroundColor: secondaryColor,
       fontFamily: 'Ubuntu',
-      textTheme: TextTheme(
+      textTheme: const TextTheme(
         bodyText1: TextStyle(),
         bodyText2: TextStyle(),
         headline1: TextStyle(),
@@ -40,15 +25,15 @@ class CustomTheme {
         bodyColor: primaryColor,
         displayColor: primaryColor,
       ),
-      dividerTheme: DividerThemeData(
+      dividerTheme: const DividerThemeData(
         color: secondaryColor,
       ),
     );
   }
 }
 
-final String persons = 'persons';
-final String messages = 'messages';
+const String persons = 'persons';
+const String messages = 'messages';
 
 class PersonFields {
   static final List<String> values = [
@@ -58,10 +43,10 @@ class PersonFields {
     displayPicture,
   ];
 
-  static final String id = 'id';
-  static final String number = 'number';
-  static final String username = 'username';
-  static final String displayPicture = 'displayPicture';
+  static const String id = 'id';
+  static const String number = 'number';
+  static const String username = 'username';
+  static const String displayPicture = 'displayPicture';
 }
 
 class MessageFields {
@@ -73,11 +58,11 @@ class MessageFields {
     isSender,
   ];
 
-  static final String id = 'id';
-  static final String receipient = 'receipient';
-  static final String content = 'content';
-  static final String time = 'time';
-  static final String isSender = 'isSender';
+  static const String id = 'id';
+  static const String receipient = 'receipient';
+  static const String content = 'content';
+  static const String time = 'time';
+  static const String isSender = 'isSender';
 }
 
 class Person {
