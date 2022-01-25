@@ -1,12 +1,16 @@
 import 'dart:async';
-import 'package:bluetooth_messenger/chats.dart';
+import 'package:bluetooth_messenger/screens/chats.dart';
 import 'package:bluetooth_messenger/constants.dart';
+import 'package:bluetooth_messenger/screens/signin.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import './signin.dart';
+
 
 class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({Key? key}) : super(key: key);
+  final BuildContext context;
+
+  const WelcomeScreen({Key? key, required this.context}) : super(key: key);
 
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
@@ -14,26 +18,81 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
   bool flag = false;
+  bool contactPermissionGranted = false;
 
   @override
   void initState() {
     getLoginState();
+    checkContactStatus();
     Timer(
       const Duration(seconds: 3),
       () => flag
           ? Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => ChatsScreen(),
+                builder: (context) => const ChatsScreen(),
               ),
             )
           : Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => SignInScreen(),
+                builder: (context) => const SignInScreen(),
               ),
             ),
     );
+  }
+
+  void checkContactStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool('contactPermission') ?? false) {
+      contactPermissionGranted = true;
+    } else {
+      final PermissionStatus contactPermissionStatus = await _getPermission();
+      if (contactPermissionStatus == PermissionStatus.granted) {
+        prefs.setBool('contactPermission', true);
+        contactPermissionGranted = true;
+      }
+    }
+  }
+
+  Future<PermissionStatus> _getPermission() async {
+    final PermissionStatus contactPermission =
+        await Permission.contacts.request();
+    if (contactPermission == PermissionStatus.granted) {
+      return contactPermission;
+    } else if (contactPermission != PermissionStatus.denied) {
+      showDialog(
+        context: super.context,
+        builder: (BuildContext context) {
+          return const SimpleDialog(
+            backgroundColor: secondaryColor,
+            title: Text(
+              "Permission for contacts denied",
+              style: TextStyle(
+                color: primaryColorAccent,
+              ),
+            ),
+          );
+        },
+      );
+      return contactPermission;
+    } else {
+      showDialog(
+        context: super.context,
+        builder: (BuildContext context) {
+          return const SimpleDialog(
+            backgroundColor: secondaryColor,
+            title: Text(
+              "Allow access to contacts in settings page",
+              style: TextStyle(
+                color: primaryColorAccent,
+              ),
+            ),
+          );
+        },
+      );
+      return contactPermission;
+    }
   }
 
   void getLoginState() async {

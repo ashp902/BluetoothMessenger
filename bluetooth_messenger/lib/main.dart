@@ -1,5 +1,5 @@
 import 'package:bluetooth_messenger/constants.dart';
-import 'package:bluetooth_messenger/welcome_screen.dart';
+import 'package:bluetooth_messenger/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: CustomTheme.dark,
       title: 'Bluetooth Messenger',
       debugShowCheckedModeBanner: false,
-      home: WelcomeScreen(),
+      home: WelcomeScreen(context: context),
     );
   }
 }

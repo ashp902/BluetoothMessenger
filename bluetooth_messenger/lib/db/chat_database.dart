@@ -63,12 +63,12 @@ class ChatDatabase {
     return person.copy(id: id);
   }
 
-  Future<int> removePerson(int id) async {
+  Future<void> removePerson(int id) async {
     final db = await instance.database;
 
     deleteAllMessages(id);
 
-    return await db.delete(
+    await db.delete(
       persons,
       where: '${PersonFields.id} = ?',
       whereArgs: [id],
@@ -110,10 +110,10 @@ class ChatDatabase {
     return message.copy(id: id);
   }
 
-  Future<int?> deleteMessage(int? id) async {
+  Future<void> deleteMessage(int? id) async {
     final db = await instance.database;
 
-    return await db.delete(
+    await db.delete(
       messages,
       where: '${MessageFields.id} = ?',
       whereArgs: [id],

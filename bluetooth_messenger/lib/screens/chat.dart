@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bluetooth_messenger/db/chat_database.dart';
-import 'package:bluetooth_messenger/profile.dart';
+import 'package:bluetooth_messenger/screens/edit_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:bluetooth_messenger/constants.dart';
 
@@ -86,7 +86,7 @@ class ChatScreen extends StatelessWidget {
             onSelected: (result) {
               if (result == 0) {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProfileScreen()));
+                    MaterialPageRoute(builder: (context) => EditProfilePage()));
               }
             },
           ),
@@ -100,7 +100,7 @@ class ChatScreen extends StatelessWidget {
 
   void openProfile(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => ProfileScreen()));
+        context, MaterialPageRoute(builder: (context) => EditProfilePage()));
   }
 }
 

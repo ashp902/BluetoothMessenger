@@ -1,9 +1,10 @@
 import 'package:bluetooth_messenger/constants.dart';
+import 'package:bluetooth_messenger/screens/chats.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import './chats.dart';
+
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -60,8 +61,8 @@ class SignInScreenState extends State<SignInScreen> {
                     borderSide: BorderSide(color: textFieldColor, width: 1.0),
                   ),
                   focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: textFieldColor, width: 1.0)),
+                    borderSide: BorderSide(color: textFieldColor, width: 1.0),
+                  ),
                   hintText: 'Phone number',
                   hintStyle: const TextStyle(
                     color: primaryColorAccent,
