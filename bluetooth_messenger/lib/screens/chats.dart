@@ -4,10 +4,8 @@ import 'package:bluetooth_messenger/constants.dart';
 import 'package:bluetooth_messenger/db/chat_database.dart';
 import 'package:bluetooth_messenger/screens/chat.dart';
 import 'package:bluetooth_messenger/screens/edit_profile.dart';
-import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 const chatRoute = './chat';
 
@@ -85,7 +83,6 @@ class _ChatsState extends State<Chats> {
   final double screenWidth;
   final double screenHeight;
   late List<Person> chats;
-  Iterable<Contact> _contactsList = [];
   List<String> lastMessages = [];
   bool isLoading = false;
   bool flag = false;
@@ -97,14 +94,6 @@ class _ChatsState extends State<Chats> {
     super.initState();
     checkContacts();
     refreshChats();
-  }
-
-  getContacts() async {
-    final Iterable<Contact> contactsList = await ContactsService.getContacts();
-    _contactsList = contactsList;
-    if (_contactsList.isEmpty) {
-      print("empty");
-    }
   }
 
   Future refreshChats() async {
@@ -148,57 +137,7 @@ class _ChatsState extends State<Chats> {
                   ),
                 ),
                 floatingActionButton: FloatingActionButton(
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return SimpleDialog(
-                        backgroundColor: secondaryColor,
-                        contentPadding: const EdgeInsets.all(20),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(20),
-                          ),
-                        ),
-                        children: [
-                          flag
-                              ? SizedBox(
-                                  width: double.maxFinite,
-                                  height: double.maxFinite,
-                                  child: ListView.builder(
-                                    itemCount: _contactsList.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      Contact contact =
-                                          _contactsList.elementAt(index);
-                                      return ListTile(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 2, horizontal: 10),
-                                        leading: (contact.avatar != null &&
-                                                contact.avatar!.isNotEmpty)
-                                            ? CircleAvatar(
-                                                backgroundImage: MemoryImage(
-                                                    contact.avatar!),
-                                              )
-                                            : CircleAvatar(
-                                                child: Text(contact.initials()),
-                                                backgroundColor:
-                                                    primaryColorAccent,
-                                              ),
-                                      );
-                                    },
-                                  ),
-                                )
-                              : const Center(
-                                  child: CircularProgressIndicator(
-                                    color: primaryColorAccent,
-                                    strokeWidth: 3,
-                                  ),
-                                ),
-                        ],
-                      );
-                    },
-                  ),
+                  onPressed: () => {},
                   backgroundColor: primaryColor,
                   child: const Icon(
                     Icons.add,
@@ -248,75 +187,7 @@ class _ChatsState extends State<Chats> {
                   },
                 ),
                 floatingActionButton: FloatingActionButton(
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return SimpleDialog(
-                        backgroundColor: secondaryColor,
-                        contentPadding: const EdgeInsets.all(20),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(20),
-                          ),
-                        ),
-                        children: [
-                          flag
-                              ? SizedBox(
-                                  width: double.maxFinite,
-                                  height: double.maxFinite,
-                                  child: _contactsList.isEmpty
-                                      ? const Center(
-                                          child: Text(
-                                            "No contacts to display",
-                                            style: TextStyle(
-                                              color: secondaryColorAccent,
-                                            ),
-                                          ),
-                                        )
-                                      : ListView.builder(
-                                          itemCount: _contactsList.length,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            Contact contact =
-                                                _contactsList.elementAt(index);
-                                            return ListTile(
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 2,
-                                                      horizontal: 10),
-                                              leading: (contact.avatar !=
-                                                          null &&
-                                                      contact
-                                                          .avatar!.isNotEmpty)
-                                                  ? CircleAvatar(
-                                                      backgroundImage:
-                                                          MemoryImage(
-                                                              contact.avatar!),
-                                                    )
-                                                  : CircleAvatar(
-                                                      child: Text(
-                                                          contact.initials()),
-                                                      backgroundColor:
-                                                          primaryColorAccent,
-                                                    ),
-                                            );
-                                          },
-                                        ),
-                                )
-                              : const SizedBox(
-                                  width: double.maxFinite,
-                                  height: double.maxFinite,
-                                  child: Center(
-                                    child: CircularProgressIndicator(
-                                      color: primaryColorAccent,
-                                      strokeWidth: 3,
-                                    ),
-                                  ),
-                                ),
-                        ],
-                      );
-                    },
-                  ),
+                  onPressed: () => {},
                   backgroundColor: primaryColor,
                   child: const Icon(
                     Icons.add,
