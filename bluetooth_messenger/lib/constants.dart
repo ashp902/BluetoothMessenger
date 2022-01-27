@@ -41,12 +41,16 @@ class PersonFields {
     number,
     username,
     displayPicture,
+    publicKey,
+    address,
   ];
 
   static const String id = 'id';
   static const String number = 'number';
   static const String username = 'username';
   static const String displayPicture = 'displayPicture';
+  static const String publicKey = 'publicKey';
+  static const String address = 'address';
 }
 
 class MessageFields {
@@ -70,12 +74,16 @@ class Person {
   final int number;
   final String username;
   final String displayPicture;
+  final String publicKey;
+  final String address;
 
   const Person({
     this.id,
     required this.number,
     required this.username,
     required this.displayPicture,
+    required this.publicKey,
+    required this.address,
   });
 
   Map<String, Object?> toJson() => {
@@ -83,6 +91,8 @@ class Person {
         PersonFields.number: number,
         PersonFields.username: username,
         PersonFields.displayPicture: displayPicture,
+        PersonFields.publicKey: publicKey,
+        PersonFields.address: address,
       };
 
   static Person fromJson(Map<String, Object?> json) => Person(
@@ -90,6 +100,8 @@ class Person {
         number: json[PersonFields.number] as int,
         username: json[PersonFields.username] as String,
         displayPicture: json[PersonFields.displayPicture] as String,
+        publicKey: json[PersonFields.publicKey] as String,
+        address: json[PersonFields.address] as String,
       );
 
   Person copy({
@@ -97,13 +109,16 @@ class Person {
     int? number,
     String? username,
     String? displayPicture,
-    String? lastMessage,
+    String? publicKey,
+    String? address
   }) =>
       Person(
         id: id ?? this.id,
         number: number ?? this.number,
         username: username ?? this.username,
         displayPicture: displayPicture ?? this.displayPicture,
+        publicKey: publicKey ?? this.publicKey,
+        address: address ?? this.address,
       );
 }
 

@@ -202,6 +202,8 @@ class _ChatsState extends State<Chats> {
       number: 123,
       username: 'Mitsuha',
       displayPicture: 'assets/images/mitsuha.png',
+      publicKey: '',
+      address: '',
     ));
     refreshChats();
   }

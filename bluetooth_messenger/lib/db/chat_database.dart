@@ -28,6 +28,8 @@ class ChatDatabase {
     const numberType = 'INTEGER NOT NULL';
     const textType = 'TEXT NOT NULL';
     const boolType = 'BOOLEAN NOT NULL';
+    const keyType = 'TEXT NOT NULL';
+    const addressType = 'TEXT NOT NULL';
 
     const reciepientType = 'INETGER NOT NULL';
 
@@ -36,8 +38,9 @@ class ChatDatabase {
       ${PersonFields.id} $idType,
       ${PersonFields.number} $numberType,
       ${PersonFields.username} $textType,
-      ${PersonFields.displayPicture} $textType
-
+      ${PersonFields.displayPicture} $textType,
+      ${PersonFields.publicKey} $keyType,
+      ${PersonFields.address} $addressType
     )
     ''');
 
