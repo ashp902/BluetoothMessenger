@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:bluetooth_messenger/db/chat_database.dart';
+import 'package:bluetooth_messenger/network/router.dart';
 import 'package:bluetooth_messenger/screens/edit_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:bluetooth_messenger/constants.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 
 class ChatScreen extends StatelessWidget {
   final Person user;
@@ -125,6 +127,32 @@ class _MessagesState extends State<_Messages> {
   void initState() {
     super.initState();
     refreshMessages();
+    loop();
+  }
+
+  void loop() async {
+    final BluetoothServiceProvider bluetoothService =
+        BluetoothServiceProvider();
+    while (true) {
+      for (BluetoothDevice device in bluetoothService.devicesList) {
+        Client middle = Client(device: device);
+        middle.getServices();
+        middle.getCharacteristics();
+        for (BluetoothCharacteristic char in middle.characteristics) {
+          if (char.properties.read) {
+            String message = middle.read(char);
+            DateTime now = DateTime.now();
+            ChatDatabase.instance.postMessage(ChatMessage(
+              receipient: 0,
+              content: message,
+              time: "${now.hour}:${now.minute}",
+              isSender: false,
+            ));
+            refreshMessages();
+          }
+        }
+      }
+    }
   }
 
   Future refreshMessages() async {
@@ -250,9 +278,39 @@ class _MessagesState extends State<_Messages> {
     );
   }
 
-  void post() {
+  Future<void> post() async {
     final String message = messenger.text;
     if (message == '') return;
+
+    final BluetoothServiceProvider bluetoothService =
+        BluetoothServiceProvider();
+    bool flag = false;
+    for (BluetoothDevice device in bluetoothService.devicesList) {
+      if (widget.user.address == device.id.toString()) {
+        flag = true;
+        final Client receiver = Client(device: device);
+        receiver.getServices();
+        receiver.getCharacteristics();
+        for (BluetoothCharacteristic char in receiver.characteristics) {
+          if (char.properties.write) {
+            receiver.write(char, message);
+          }
+        }
+      }
+    }
+    if (!flag) {
+      for (BluetoothDevice device in bluetoothService.devicesList) {
+        Client middle = Client(device: device);
+        middle.getServices();
+        middle.getCharacteristics();
+        for (BluetoothCharacteristic char in middle.characteristics) {
+          if (char.properties.write) {
+            middle.write(char, message);
+          }
+        }
+      }
+    }
+
     DateTime now = DateTime.now();
     ChatDatabase.instance.postMessage(ChatMessage(
       receipient: widget.user.id,
