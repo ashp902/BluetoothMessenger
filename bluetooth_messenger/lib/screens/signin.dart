@@ -1,10 +1,10 @@
 import 'package:bluetooth_messenger/constants.dart';
+import 'package:bluetooth_messenger/encryption/encrypt_service.dart';
 import 'package:bluetooth_messenger/screens/chats.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pointycastle/asymmetric/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -217,5 +217,12 @@ class SignInScreenState extends State<SignInScreen> {
   setLoginState() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('LoggedIn', true);
+    prefs.setString('phoneNumber', phoneNumber!);
+    final keys = EncryptionService.createKeys();
+    prefs.setString('RSAPublicKey',
+        EncryptionService.encodePublicKeyToPem(keys[0] as RSAPublicKey));
+    prefs.setString('RSAPrivateKey',
+        EncryptionService.encodePrivateKeyToPem(keys[1] as RSAPrivateKey));
+    prefs.setString('username', '');
   }
 }

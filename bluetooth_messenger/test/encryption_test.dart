@@ -75,4 +75,6 @@ void main() {
   print(decryptedText);
 
   print('end');
+  var str = "@abc@def@ghi@";
+  print(str.split("@"));
 }

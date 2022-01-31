@@ -1,6 +1,5 @@
 import 'package:bluetooth_messenger/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:bluetooth_messenger/screens/setting.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -11,6 +10,7 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   bool showPassword = false;
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -26,18 +26,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.settings,
-              color: secondaryColor,
-            ),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => SettingsPage()));
-            },
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.only(left: 16, top: 25, right: 16),
@@ -106,11 +94,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
               Divider(
                 height: screenHeight / 40,
               ),
-              buildTextField("Full Name", "Enter your name", false),
-              buildTextField("E-mail", "Enter your Email", false),
-              buildTextField(
-                  "About you", "Describe something about you ", false),
-              buildTextField("Pnone", "7672377623", false),
+              buildTextField("Username", "Enter your name", false),
+              buildTextField("Email ID", "Enter your Email", false),
+              buildTextField("Bio", "Describe something about you ", false),
+              buildTextField("Phone", "Enter your phone number", false),
               Divider(
                 height: screenHeight / 40,
               ),

@@ -1,10 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:asn1lib/asn1lib.dart';
 import 'package:bluetooth_messenger/constants.dart';
 import 'package:bluetooth_messenger/db/chat_database.dart';
 import 'package:bluetooth_messenger/screens/chat.dart';
 import 'package:bluetooth_messenger/screens/edit_profile.dart';
+import 'package:bluetooth_messenger/screens/setting.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const chatRoute = './chat';
@@ -22,38 +27,18 @@ class ChatsScreen extends StatelessWidget {
         backgroundColor: primaryColorAccent,
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search_rounded),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const EditProfilePage())),
+            icon: const Icon(Icons.person_rounded),
             color: secondaryColor,
           ),
-          PopupMenuButton(
-            icon: const Icon(
-              Icons.more_vert_rounded,
-              color: secondaryColor,
-            ),
-            shape: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(6)),
-            ),
+          IconButton(
+            onPressed: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const SettingsPage())),
+            icon: const Icon(Icons.settings_rounded),
             color: secondaryColor,
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                child: Text(
-                  "Settings",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                value: 0,
-              ),
-            ],
-            onSelected: (result) {
-              if (result == 0) {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const EditProfilePage()));
-              }
-            },
           ),
         ],
         title: const Text(
@@ -86,13 +71,13 @@ class _ChatsState extends State<Chats> {
   List<String> lastMessages = [];
   bool isLoading = false;
   bool flag = false;
+  String qrCode = "";
 
   _ChatsState(this.screenWidth, this.screenHeight);
 
   @override
   void initState() {
     super.initState();
-    checkContacts();
     refreshChats();
   }
 
@@ -108,13 +93,6 @@ class _ChatsState extends State<Chats> {
       }
     }
     setState(() => isLoading = false);
-  }
-
-  void checkContacts() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      flag = prefs.getBool('contactPermission') ?? false;
-    });
   }
 
   @override
@@ -140,7 +118,7 @@ class _ChatsState extends State<Chats> {
                   onPressed: () => {},
                   backgroundColor: primaryColor,
                   child: const Icon(
-                    Icons.add,
+                    Icons.qr_code_scanner_rounded,
                     color: secondaryColor,
                   ),
                 ),
@@ -187,23 +165,44 @@ class _ChatsState extends State<Chats> {
                   },
                 ),
                 floatingActionButton: FloatingActionButton(
-                  onPressed: () => {},
+                  onPressed: () => scanQrCode(),
                   backgroundColor: primaryColor,
                   child: const Icon(
-                    Icons.add,
+                    Icons.qr_code_scanner_rounded,
                     color: secondaryColor,
                   ),
                 ),
               );
   }
 
-  void addPerson() {
-    ChatDatabase.instance.createPerson(const Person(
-      number: 123,
-      username: 'Mitsuha',
-      displayPicture: 'assets/images/mitsuha.png',
-      publicKey: '',
-      address: '',
+  Future<void> scanQrCode() async {
+    try {
+      final scanner = await FlutterBarcodeScanner.scanBarcode(
+        'AB20FD',
+        'Back',
+        false,
+        ScanMode.QR,
+      );
+      if (!mounted) return;
+      setState(() {
+        qrCode = scanner;
+      });
+      addConversation(scanner);
+    } on PlatformException {}
+  }
+
+  void addConversation(String qrString) {
+    final arr = qrString.split("@");
+    final address = arr[1];
+    final key = arr[2];
+    final number = arr[3];
+    final username = arr[4];
+    ChatDatabase.instance.createPerson(Person(
+      number: int.parse(number),
+      username: username,
+      displayPicture: "",
+      publicKey: key,
+      address: address,
     ));
     refreshChats();
   }

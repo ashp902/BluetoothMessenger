@@ -1,7 +1,7 @@
-import 'package:bluetooth_messenger/screens/signin.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:bluetooth_messenger/constants.dart';
 import 'package:flutter/material.dart';
-import './signin.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -11,21 +11,71 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  String bluetoothAddress = "";
+  String RSAPublicKey = "";
+  String phoneNumber = "";
+  String username = "";
+
+  @override
+  void initState() {
+    super.initState();
+    getBluetoothAddress();
+    getRSAPublicKey();
+    getPhoneNumber();
+    getUsername();
+  }
+
+  void getBluetoothAddress() {}
+
+  void getRSAPublicKey() async {
+    final prefs = await SharedPreferences.getInstance();
+    String storedRSAPublicKey = prefs.getString('RSAPublicKey') ?? "";
+    RSAPublicKey = storedRSAPublicKey;
+  }
+
+  void getPhoneNumber() async {
+    final prefs = await SharedPreferences.getInstance();
+    String storedPhoneNumber = prefs.getString('phoneNumber') ?? "";
+    phoneNumber = storedPhoneNumber;
+  }
+
+  void getUsername() async {
+    final prefs = await SharedPreferences.getInstance();
+    String storedUsername = prefs.getString('username') ?? "";
+    username = storedUsername;
+  }
+
+  String generateQRString() {
+    return '@' +
+        bluetoothAddress +
+        '@' +
+        RSAPublicKey +
+        '@' +
+        phoneNumber +
+        '@' +
+        username +
+        '@';
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 1,
+        automaticallyImplyLeading: false,
+        backgroundColor: primaryColorAccent,
         leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
           icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.green,
+            Icons.arrow_back_ios_rounded,
+            color: secondaryColor,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: const Text(
+          "Settings",
+          style: TextStyle(
+            color: secondaryColor,
           ),
         ),
       ),
@@ -33,31 +83,14 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.only(left: 16, top: 25, right: 16),
         child: ListView(
           children: [
-            const Text(
-              "Settings",
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            Row(
-              children: const [
-                Icon(
-                  Icons.person,
-                  color: Colors.green,
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-                Text(
-                  "Account",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            const Divider(
-              height: 15,
-              thickness: 2,
+            Container(
+              alignment: Alignment.center,
+              child: QrImage(
+                data: generateQRString(),
+                version: QrVersions.auto,
+                size: screenWidth / 1.5,
+                foregroundColor: Colors.grey[600],
+              ),
             ),
             const SizedBox(
               height: 10,
@@ -76,12 +109,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),
                 onPressed: () {},
-                // onPressed: () {
-                //   Navigator.of(context).push(MaterialPageRoute(
-                //       builder: (BuildContext context) =>
-                //           SignIn(MediaQuery.of(context).size.width,
-                //     MediaQuery.of(context).size.height)));
-                // }, getting error for this
                 child: const Text("SIGN OUT",
                     style: TextStyle(
                         fontSize: 16, letterSpacing: 2.2, color: Colors.grey)),
